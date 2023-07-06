@@ -1,22 +1,57 @@
 #include<iostream>
 #include<string>
-#include <unordered_map>
+#include <map>
 using namespace std;
 
-void intToRoman(int n) {
-	string romanInteger[13] = { "I","IV","V","IX","X","XL","L","XC","C","CD","D","CM","M" };
-	int decimalInteger[13] = { 1,4,5,9,10,40,50,90,100,400,500,900,1000 };
-	int iterate = 12, quotient = 0; //i for iteration and q for quotient that indicates the repetition of the symbol if necessary
-	
-		while (n > 0) {
-		quotient = n / decimalInteger[iterate];	//going from largest to smallest possible divisor
-		n = n % decimalInteger[iterate];	//remainder to be processed
-			while (quotient--) {		//repetition count
-				cout << romanInteger[iterate];		//prints the roman numeral
-				}
-		iterate--;		//iterating from right to left
-		}
+string intToRoman(int num) {
+	string romanInt = "";
+	map<int, string> mp{
+			{1,"I"},
+			{4,"IV"},
+			{5,"V"},
+			{9,"IX"},
+			{10,"X"},
+			{40,"XL"},
+			{50,"L"},
+			{90,"XC"},
+			{100,"C"},
+			{400,"CD"},
+			{500,"D"},
+			{900,"CM"},
+			{1000,"M"},
+	};
+    int len = 0, temp = num;
+    while (temp != 0) {
+        temp /= 10;
+        len++;
+    }
+    temp = num;
+    for (int i = len - 1; i >= 0; i--) {
+        int div = pow(10, i);
+        int req = temp / div;
+        int val = req * div;
+        if (mp[val] != "")romanInt += mp[val];
+        else {
+            if (div == 1 && req >= 5) {
+                romanInt += mp[5];
+                req -= 5;
+            }
+            if (div == 10 && req >= 5) {
+                romanInt += mp[50];
+                req -= 5;
+            }
+            if (div == 100 && req >= 5) {
+                romanInt += mp[500];
+                req -= 5;
+            }
+            while (req--)romanInt += mp[div];
+        }
+        temp = temp - val;
+    }
+
+    return romanInt;
 }
+
 
 int main() {
 	cout << "Enter integer\n";
