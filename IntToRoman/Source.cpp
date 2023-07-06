@@ -1,37 +1,64 @@
 #include<iostream>
 #include<string>
+#include <map>
 using namespace std;
 
-void intToRoman(int n) {
-	string romanInteger[13] = { "I","IV","V","IX","X","XL","L","XC","C","CD","D","CM","M" };
-	int decimalInteger[13] = { 1,4,5,9,10,40,50,90,100,400,500,900,1000 };
-	int i = 12, q = 0; //i for iteration and q for quotient that indicates the repetition of the symbol if necessary
-	
-		while (n > 0) {
-		q = n / decimalInteger[i];	//going from largest to smallest possible divisor
-		n = n % decimalInteger[i];	//remainder to be processed
-			while (q--) {		//repetition count
-				cout << romanInteger[i];		//prints the roman numeral
-				}
-		i--;		//iterating from right to left
-		}
+string intToRoman(int num) {
+	string romanInt = "";
+	map<int, string> mp{
+			{1,"I"},
+			{4,"IV"},
+			{5,"V"},
+			{9,"IX"},
+			{10,"X"},
+			{40,"XL"},
+			{50,"L"},
+			{90,"XC"},
+			{100,"C"},
+			{400,"CD"},
+			{500,"D"},
+			{900,"CM"},
+			{1000,"M"},
+	};
+    int len = 0, temp = num;
+    while (temp != 0) {
+        temp /= 10;
+        len++;
+    }
+    temp = num;
+    for (int i = len - 1; i >= 0; i--) {
+        int div = pow(10, i);
+        int req = temp / div;
+        int val = req * div;
+        if (mp[val] != "")romanInt += mp[val];
+        else {
+            if (div == 1 && req >= 5) {
+                romanInt += mp[5];
+                req -= 5;
+            }
+            if (div == 10 && req >= 5) {
+                romanInt += mp[50];
+                req -= 5;
+            }
+            if (div == 100 && req >= 5) {
+                romanInt += mp[500];
+                req -= 5;
+            }
+            while (req--)romanInt += mp[div];
+        }
+        temp = temp - val;
+    }
 
-		/*string rom="";
-		for(int i=0; i<=12; ++i){
-			while(n-decimalInteger[i]>=0){
-				rom+=romanInteger[i];
-				n-=decimalInteger[i];
-			}
-		}
-	*/
+    return romanInt;
 }
+
 
 int main() {
 	cout << "Enter integer\n";
-	int n = 0;
-	cin >> n;
-	cout << "The roman integer for " << n << "is ";
-	intToRoman(n);
+	int input = 0;
+	cin >> input;
+	cout << "The roman integer for " << input << "is ";
+	intToRoman(input);
 	cout << endl;
 	//system("pasue");
 	return 0;
